@@ -7,8 +7,8 @@
         ↓
 4. kernel/start.S          → 启动汇编（设置栈、跳转）
         ↓
-5. kernel/uart.c           → 硬件驱动（直接操作寄存器）
+5. kernel/sbi.h            → SBI 接口（调用约定、Legacy Console 扩展）
         ↓
-6. kernel/main.c           → 内核入口（最终组合）
+6. kernel/main.c           → 内核入口（SBI console 输出）
         ↓
 7. Makefile                → 构建流程

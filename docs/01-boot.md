@@ -75,22 +75,26 @@ _loop:
 
 ```c
 int main(void) {
-    putchar_uart('H');   // 直接写 UART
+    putchar_uart('H');   // 通过 SBI console 输出字符
     puts_uart("Hello\n");
     sbi_shutdown();      // 调用 SBI 关机
 }
 ```
 
 内核启动后：
-1. 使用直接 UART 方式输出字符（绕过 SBI console）
+1. 通过 SBI console 服务输出字符（`sbi_console_putchar()`）
 2. 显示欢迎信息
 3. 调用 SBI shutdown
 
-## 为什么用直接 UART 而非 SBI console？
+## SBI 调用约定（重要！）
 
-SBI console_putchar() 需要通过 ecall 指令调用 OpenSBI，但在 **nographic** 模式下，SBI console 输出可能与 QEMU 的输出冲突或被缓冲。
+SBI v0.2+ 的寄存器约定：
+- `a0-a5`：参数
+- `a6`：Function ID (FID)
+- `a7`：Extension ID (EID)
+- `ecall`：触发调用
 
-直接写入 0x10000000 (UART 基地址) 更可靠。
+**注意**：OpenSBI v1.3 运行时 SBI 版本为 1.0，已移除旧的 Console 扩展（EID=0x4）。必须使用 Legacy Console 扩展（EID=0x1, FID=0x0）才能正常输出字符。
 
 ## 下一步
 

@@ -26,7 +26,7 @@ CFLAGS = -nostdinc -nostdlib -fno-builtin -fno-pie -fpic \
 LDFLAGS = -nostdlib -Tkernel/linker.ld --no-relax
 
 # 内核目标文件
-KERNEL_OBJS = kernel/start.o kernel/main.o kernel/uart.o
+KERNEL_OBJS = kernel/start.o kernel/main.o
 KERNEL = kernel/kernel.elf
 
 # 默认目标
@@ -41,9 +41,6 @@ kernel/start.o: kernel/start.S
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 kernel/main.o: kernel/main.c kernel/types.h kernel/sbi.h
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-kernel/uart.o: kernel/uart.c kernel/types.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # 清理

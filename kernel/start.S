@@ -19,12 +19,11 @@ _start:
 
 # OpenSBI SBI调用 - 系统关机/重启
 sbi_shutdown:
-    # SBI Extension: System Reset (0x53525354 "SRST")
-    li a0, 0               # 第一个参数：reset_type (0=关机, 1=重启)
-    li a1, 0               # 第二个参数：reset_reason (0=系统错误原因)
-    li a2, 0x53525354      # Extension ID: "SRST"
-    li a3, 0x00000001      # Function ID: 系统复位功能
-    li a7, 0x01000000      # SBI调用号（EID为32位，需要左移）
+    # SBI Extension: System Reset (EID=0x53525354 "SRST", FID=0)
+    li a0, 0               # reset_type (0=shutdown, 1=cold_reboot, 2=warm_reboot)
+    li a1, 0               # reset_reason (0=no reason)
+    li a6, 0               # Function ID: 0 (system reset)
+    li a7, 0x53525354      # Extension ID: "SRST"
     ecall                  # 触发SBI调用
     ret
 

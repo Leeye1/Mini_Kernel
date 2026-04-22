@@ -7,11 +7,11 @@
 ## 阶段划分
 
 ### 阶段 1：最小内核（Boot）- 当前阶段 ✓
-- **目标**：在 QEMU 上启动并输出字符
+- **目标**：在 QEMU 上启动并通过 SBI 输出字符
 - **文件**：
-  - `kernel/start.S` - 启动汇编，设置栈，跳转 C
-  - `kernel/main.c` - 内核入口
-  - `kernel/uart.c` - 串口驱动`
+  - `kernel/start.S` - 启动汇编，设置栈，跳转 C，SBI 关机
+  - `kernel/main.c` - 内核入口，SBI console 输出
+  - `kernel/sbi.h` - SBI 接口定义（调用约定、Legacy Console 扩展）
   - `kernel/types.h` - 类型定义
   - `kernel/linker.ld` - 链接脚本
 

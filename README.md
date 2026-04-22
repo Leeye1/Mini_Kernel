@@ -4,11 +4,10 @@
 
 ## 功能特性
 
-- **阶段 1**：最小内核（Boot + UART + OpenSBI）
+- **阶段 1**：最小内核（Boot + SBI Console + OpenSBI）
   - **启动流程**：RISC-V 汇编启动代码，栈指针初始化，C 语言主入口
   - **内存布局**：内核加载于 0x80200000（避开 OpenSBI 0x80000000-0x80400000），8KB 内核栈
-  - **UART 驱动**：完整的 NS16550 兼容串口驱动，支持 115200 波特率配置
-  - **直接 UART 输出**：绕过 SBI，直接访问内存映射 I/O (0x10000000)
+  - **SBI Console 输出**：通过 OpenSBI 提供的 console 服务进行字符输出
   - **SBI 接口**：定义 SBI 调用约定，支持 Base/Console/Timer/Shutdown 扩展
   - **构建特性**：位置无关代码（-fpic）、禁用链接放松（--no-relax）
 
@@ -31,15 +30,13 @@ make clean
 Mini_Kernel/
 ├── kernel/                 # 内核源码
 │   ├── start.S            # 启动汇编（栈初始化、main 跳转、SBI 调用）
-│   ├── main.c             # 主入口（直接 UART 输出）
-│   ├── uart.c             # UART 驱动（NS16550 兼容，115200-8-N-1）
+│   ├── main.c             # 主入口（SBI console 输出）
 │   ├── types.h            # 基础类型定义（uint/int/指针类型）
 │   ├── sbi.h              # SBI 接口（调用约定、函数 ID、内联函数）
 │   └── linker.ld          # 链接脚本（内存布局：0x80200000-0x80412000）
 ├── docs/                  # 学习文档
 │   ├── 00-overview.md     # 阶段计划和项目概览
 │   ├── 01-boot.md         # 启动流程详解
-│   ├── 02-uart.md         # UART 驱动实现
 │   ├── 03-api.md          # API 参考
 │   ├── learning.md        # 学习资源
 │   ├── qemu/              # QEMU 和 OpenSBI 资料
@@ -64,14 +61,9 @@ Mini_Kernel/
    - [kernel/types.h](kernel/types.h) - 基础类型定义
    - [kernel/sbi.h](kernel/sbi.h) - SBI 接口和内联函数
 
-3. **驱动与主程序**
-   - [kernel/uart.c](kernel/uart.c) - UART 驱动详解
-   - [docs/02-uart.md](docs/02-uart.md) - UART 工作原理
-   - [kernel/main.c](kernel/main.c) - 内核主入口
-   
-4. **编译与运行**
+3. **API 与编译**
+   - [docs/03-api.md](docs/03-api.md) - SBI console API 参考
    - [Makefile](Makefile) - 构建流程（gcc 选项、链接脚本配置）
-   - [docs/03-api.md](docs/03-api.md) - API 参考
 
 ## 环境要求
 
@@ -139,10 +131,9 @@ Loaded at 0x80200000
 ## 已知限制
 
 - **无虚拟内存**：当前运行在物理地址上，未实现分页机制
-- **字符串处理**：字符串常量有重定位问题，使用 `putchar_uart()` 逐字符输出
 - **单一模式**：仅支持 Supervisor 模式，无用户态
 - **无中断处理**：尚未实现异常和中断处理
-- **静态配置**：UART 波特率等参数硬编码，无动态配置
+- **静态配置**：系统参数硬编码，无动态配置
 
 ## 许可证
 

@@ -2,28 +2,43 @@
 
 ## 阶段 1 可用 API
 
-### UART 接口
+### SBI 调用约定
+
+SBI v0.2+ 使用以下寄存器约定：
+- `a0-a5`：参数（调用时传入，返回时 a0 为返回值）
+- `a6`：Function ID (FID)
+- `a7`：Extension ID (EID)
+- `ecall`：触发 SBI 调用
+
+**重要**：OpenSBI v1.3 运行时 SBI 版本为 1.0，已移除旧的 Console 扩展（EID=0x4）。
+必须使用 **Legacy Console 扩展**（EID=0x1）才能正常输出字符。
+
+### SBI Console 接口
 
 ```c
-// 初始化 UART
-void uart_init(void);
+// 发送一个字符到控制台（使用 Legacy Console 扩展 EID=0x1, FID=0x0）
+void sbi_console_putchar(int ch);
 
-// 发送一个字符
-void uart_putc(char c);
+// 从控制台接收一个字符，无数据返回 -1
+int sbi_console_getchar(void);
+```
 
-// 接收一个字符，无数据返回 -1
-int uart_getc(void);
+### 辅助函数
+
+```c
+// 发送字符（处理换行符自动转换为 \r\n）
+static void putchar_console(char c);
 
 // 发送字符串
-void puts(char *s);
+static void puts_console(char *s);
 ```
 
 ### 示例
 
 ```c
-uart_init();           // 初始化
-uart_putc('A');        // 发送字符
-puts("Hello\n");       // 发送字符串
+putchar_console('A');              // 发送字符
+puts_console("Hello\n");           // 发送字符串
+int ch = sbi_console_getchar();    // 接收字符
 ```
 
 ## 类型定义
@@ -52,13 +67,6 @@ typedef int bool;
 #define true  1
 #define false 0
 ```
-
-## 地址常量
-
-| 常量 | 值 | 说明 |
-|------|-----|------|
-| UART_BASE | 0x10000000 | UART 基地址 |
-| KERNEL_BASE | 0x80000000 | 内核加载地址 |
 
 ## 下阶段 API
 

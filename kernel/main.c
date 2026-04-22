@@ -7,22 +7,9 @@
 #include "types.h"
 #include "sbi.h"
 
-// 外部符号（来自链接脚本和汇编）
-extern void uart_init(void);
-extern void uart_putc(char c);
-extern void puts(char *s);
-
-// 使用内联汇编直接写 UART
+// 使用 SBI 输出字符
 static void putchar_uart(char c) {
-    if (c == '\n') {
-        putchar_uart('\r');
-    }
-    // 直接写入 UART 寄存器 0x10000000
-    volatile uint8_t *uart = (volatile uint8_t *)0x10000000;
-    // 等待发送缓冲区空 (LSR TX_EMPTY = bit 5)
-    while (!(uart[5] & 0x20));
-    // 写入字符
-    uart[0] = (uint8_t)c;
+    sbi_console_putchar((int)c);
 }
 
 // 输出字符串
@@ -35,7 +22,7 @@ static void puts_uart(char *s) {
 
 // 主函数 - 内核入口
 int main(void) {
-    // 直接 UART 输出
+    // 使用 SBI 输出
     putchar_uart('H');
     putchar_uart('e');
     putchar_uart('l');
@@ -59,10 +46,6 @@ int main(void) {
     puts_uart("Hello Kernel!\n");
     puts_uart("Kernel is running...\n");
     puts_uart("Loaded at 0x80200000\n\n");
-
-    // // 调用 SBI shutdown 确认内核运行
-    // puts_uart("Calling SBI shutdown...\n");
-    // sbi_shutdown();
 
     return 0;
 }
