@@ -1,3 +1,4 @@
+//
 /*
  * Mini Kernel - 主入口
  * RISC-V 64-bit 最小内核
