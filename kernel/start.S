@@ -15,26 +15,8 @@ _start:
     # jal rd, offset: rd = pc + 4, pc = pc + offset
     # 这里 rd = ra（返回地址寄存器）
     jal main
-    call sbi_shutdown  # 如果 main 返回，调用 OpenSBI 的 shutdown 功能停机
 
-# OpenSBI SBI调用 - 系统关机/重启
-sbi_shutdown:
-    # SBI Extension: System Reset (EID=0x53525354 "SRST", FID=0)
-    # SBI v0.2+ 寄存器约定:
-    #   a7 = Extension ID (EID)
-    #   a6 = Function ID (FID)
-    #   a0-a5 = 参数
-    li a0, 0               # 参数0: reset_type (0=关机, 1=冷重启, 2=热重启)
-    li a1, 0               # 参数1: reset_reason (0=无原因)
-    li a6, 0               # FID: 0 (system reset)
-    li a7, 0x53525354      # EID: 0x53525354 ("SRST" 的 ASCII)
-    ecall                  # 触发 SBI 调用，陷入 M 态执行关机
-    ret
 
-# 无限循环 - 如果 main 返回则停机
-_loop:
-    wfi     # Wait For Interrupt（低功耗等待）
-    j _loop
 
 # 预留栈空间 - 8KB 内核栈
 .section .bss
