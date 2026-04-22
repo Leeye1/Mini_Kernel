@@ -16,11 +16,7 @@ _start:
     # 这里 rd = ra（返回地址寄存器）
     jal main
 
-
-
-# 预留栈空间 - 8KB 内核栈
-.section .bss
-.align 12   # 4KB 对齐
-_stack:
-    .space 8192
-_stack_top:
+# 无限循环 - 如果 main 返回则停机
+_loop:
+    wfi     # Wait For Interrupt（低功耗等待）
+    j _loop
