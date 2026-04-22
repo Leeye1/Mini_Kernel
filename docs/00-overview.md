@@ -11,7 +11,7 @@
 - **文件**：
   - `kernel/start.S` - 启动汇编，设置栈，跳转 C
   - `kernel/main.c` - 内核入口
-  - `kernel/uart.c` - 串口驱动
+  - `kernel/uart.c` - 串口驱动`
   - `kernel/types.h` - 类型定义
   - `kernel/linker.ld` - 链接脚本
 
