@@ -68,6 +68,5 @@ Mini_Kernel/
 │   └── 03-api.md
 ├── kernel/           # 内核源码
 ├── user/             # 用户程序
-├── Makefile          # 构建脚本
-└── AGENTS.md         # 项目指南
+└── Makefile          # 构建脚本
 ```
