@@ -2,9 +2,12 @@
 ### 输出字符到 UART：
 
 ```c
+#define SBI_EXT_LEGACY     0x1 // Legacy Console 扩展 ID
+#define SBI_CONSOLE_PUTCHAR         0x0 // Console putchar 功能 ID
 void putchar_uart(char c) {
 putchar_uart(char c)->
 sbi_console_putchar((int)c)->
+
 sbi_call(SBI_EXT_LEGACY << 24 | SBI_CONSOLE_PUTCHAR, ch, 0, 0, 0, 0, 0)
 ```
 

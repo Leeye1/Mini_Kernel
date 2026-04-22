@@ -20,11 +20,15 @@ _start:
 # OpenSBI SBI调用 - 系统关机/重启
 sbi_shutdown:
     # SBI Extension: System Reset (EID=0x53525354 "SRST", FID=0)
-    li a0, 0               # reset_type (0=shutdown, 1=cold_reboot, 2=warm_reboot)
-    li a1, 0               # reset_reason (0=no reason)
-    li a6, 0               # Function ID: 0 (system reset)
-    li a7, 0x53525354      # Extension ID: "SRST"
-    ecall                  # 触发SBI调用
+    # SBI v0.2+ 寄存器约定:
+    #   a7 = Extension ID (EID)
+    #   a6 = Function ID (FID)
+    #   a0-a5 = 参数
+    li a0, 0               # 参数0: reset_type (0=关机, 1=冷重启, 2=热重启)
+    li a1, 0               # 参数1: reset_reason (0=无原因)
+    li a6, 0               # FID: 0 (system reset)
+    li a7, 0x53525354      # EID: 0x53525354 ("SRST" 的 ASCII)
+    ecall                  # 触发 SBI 调用，陷入 M 态执行关机
     ret
 
 # 无限循环 - 如果 main 返回则停机
