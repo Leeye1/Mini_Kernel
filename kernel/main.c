@@ -60,9 +60,9 @@ int main(void) {
     puts_uart("Kernel is running...\n");
     puts_uart("Loaded at 0x80200000\n\n");
 
-    // 调用 SBI shutdown 确认内核运行
-    puts_uart("Calling SBI shutdown...\n");
-    sbi_shutdown();
+    // // 调用 SBI shutdown 确认内核运行
+    // puts_uart("Calling SBI shutdown...\n");
+    // sbi_shutdown();
 
     return 0;
 }
