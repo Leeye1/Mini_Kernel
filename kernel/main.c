@@ -37,6 +37,13 @@ static void puts_uart(const char *s) {
 }
 
 /*
+* shutdown — 通过 SBI 关机
+*/
+static void shutdown(void) {
+    sbi_shutdown();
+}
+
+/*
  * main — 内核主入口
  * 
  * 由 start.S 通过 jal main 调用
@@ -69,5 +76,6 @@ int main(void) {
     puts_uart("Kernel is running...\n");
     puts_uart("Loaded at 0x80200000\n\n");
 
+    shutdown();  /* 调用 SBI 关机 */
     return 0;
 }
